@@ -1,0 +1,61 @@
+#! /bin/bash
+# shell script to read file input and correct misspelled words
+# NAME: LEONART JAOS 
+# Z-ID: z1911688
+
+# File input as argument
+if [ $# -lt 1 ]; then
+    echo "Usage: filename"
+    exit 1
+fi
+if [ -d "$1" ]; then
+	echo "$1 is a directory"
+	exit 2
+fi
+
+# Create memory of which to store misspelled words
+touch ~/.memory
+printf '\n'
+a1=0
+a2=0
+# Iterates through misspelled words in argument file
+# if word was chosen previously to be kept in memory, skip word
+# correct word and previous word changed are stored in arrays
+for j in `aspell list < $1`
+do
+	if grep -Fxq "$j" ~/.memory
+	then
+		continue
+	else
+		read -p "'$j' is misspelled. Press "Enter" to keep 
+this spelling, or type a correction here: " str
+printf '\n'
+	fi
+	if [ "$str" = "" ]; then
+	echo "$j" >> ~/.memory
+	else
+		arr1[a1]="$j"
+		arr2[a2]="$str"
+		a1=$((a1+1))
+		a2=$((a2+1))
+	fi
+
+done
+# outputs corrected word input and misspelled word
+# sets spacing paramaters
+SIZE="${#arr1[@]}"
+COUNT=0
+echo -e "MISPELLED:    CORRECTIONS: \n"
+for k in `seq "$SIZE"`
+do
+m="${arr1[COUNT]}"
+n="${arr2[COUNT]}"
+COUNT=$((COUNT+1))
+printf '%-13s %-13s\n' $m $n
+done
+printf '\n'
+
+
+
+
+
